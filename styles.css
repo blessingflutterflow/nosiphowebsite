@@ -1530,6 +1530,25 @@ img {
     gap: 1.5rem;
 }
 
+.testimonials-single {
+    display: flex;
+    justify-content: center;
+}
+
+.testimonial-card-featured {
+    max-width: 680px;
+    width: 100%;
+}
+
+.testimonial-photo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--lavender-light);
+}
+
 .testimonial-card {
     background: var(--white);
     border: 1px solid var(--cream-dark);
@@ -1650,6 +1669,10 @@ img {
     
     .testimonials-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .testimonial-card-featured {
+        max-width: 100%;
     }
 }
 
