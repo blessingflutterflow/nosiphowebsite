@@ -37,13 +37,15 @@ document.addEventListener('DOMContentLoaded', function() {
         yearSpan.textContent = new Date().getFullYear();
     }
 
-    // Carousel
-    const track = document.getElementById('carouselTrack');
-    const prevBtn = document.getElementById('carouselPrev');
-    const nextBtn = document.getElementById('carouselNext');
-    const dotsContainer = document.getElementById('carouselDots');
+    // Carousels - support multiple
+    document.querySelectorAll('.carousel').forEach(function(carousel) {
+        const track = carousel.querySelector('.carousel-track');
+        const prevBtn = carousel.querySelector('.carousel-prev');
+        const nextBtn = carousel.querySelector('.carousel-next');
+        const dotsContainer = carousel.querySelector('.carousel-dots');
 
-    if (track && prevBtn && nextBtn && dotsContainer) {
+        if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
+
         const slides = track.querySelectorAll('.carousel-slide');
         const totalSlides = slides.length;
         let currentIndex = 0;
@@ -126,5 +128,100 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { passive: true });
 
         startAutoPlay();
+    });
+
+    // Typing effect
+    const typingElement = document.getElementById('typingText');
+    if (typingElement) {
+        const phrases = ['Freelance Developer', 'Mobile App Expert', 'UI/UX Designer', 'Problem Solver'];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            if (isDeleting) {
+                typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        type();
     }
+
+    // Scroll reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    revealElements.forEach(function(el) {
+        revealObserver.observe(el);
+    });
+
+    // Counter animation
+    const counterElements = document.querySelectorAll('.stat-number');
+    const counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                const target = parseInt(entry.target.getAttribute('data-target'));
+                const duration = 2000;
+                const start = 0;
+                const startTime = performance.now();
+
+                function updateCounter(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(start + (target - start) * easeOut);
+                    const prefix = entry.target.getAttribute('data-prefix') || '';
+                    const suffix = entry.target.getAttribute('data-suffix');
+                    const finalSuffix = suffix !== null ? suffix : (target === 100 ? '%' : '+');
+                    entry.target.textContent = prefix + current + finalSuffix;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    }
+                }
+
+                requestAnimationFrame(updateCounter);
+                counterObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    counterElements.forEach(function(el) {
+        counterObserver.observe(el);
+    });
+
+    // Parallax blobs
+    const blobs = document.querySelectorAll('.blob');
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        blobs.forEach(function(blob, index) {
+            const speed = 0.1 + (index * 0.05);
+            blob.style.transform = 'translateY(' + (scrolled * speed) + 'px)';
+        });
+    });
 });
