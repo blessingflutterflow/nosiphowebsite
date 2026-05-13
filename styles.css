@@ -543,6 +543,11 @@ img {
     flex-shrink: 0;
 }
 
+.portfolio-title-logo-pet {
+    object-position: center 15%;
+    background: #111;
+}
+
 .portfolio-list {
     margin-bottom: 1.5rem;
 }
