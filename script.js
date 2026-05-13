@@ -64,6 +64,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const dots = dotsContainer.querySelectorAll('.carousel-dot');
+        const captionDisplay = carousel.querySelector('.carousel-caption-phone');
+        const slideCaptions = Array.from(slides).map(function(slide) {
+            return slide.getAttribute('data-caption') || '';
+        });
 
         function goToSlide(index) {
             if (index < 0) index = totalSlides - 1;
@@ -74,6 +78,10 @@ document.addEventListener('DOMContentLoaded', function() {
             dots.forEach(function(dot, i) {
                 dot.classList.toggle('active', i === currentIndex);
             });
+
+            if (captionDisplay && slideCaptions[currentIndex]) {
+                captionDisplay.textContent = slideCaptions[currentIndex];
+            }
         }
 
         function nextSlide() {
